@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final String user = 'Joshua';
   final List expenseList = [];
-  final double expenses = 0;
+  double expenses = 0;
   final double budget = 0;
   final double remainingbudget = 0;
 
@@ -42,6 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
         if (newExpense != null){
           setState(() {
             expenseList.add(newExpense);
+            expenses += newExpense.amount;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Yay!... ${newExpense.description} added!')));
           });
         }
       },
@@ -112,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ))
                             ],
                           ),
-                          
                         ],)
                     ],
 
@@ -131,11 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: expenseList.length,
                 itemBuilder: (context,index)
               {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: ListTile(
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
                       leading: Container(                          
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -153,12 +153,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18,
                           fontWeight: FontWeight.w500
                         ),),
-                      subtitle: Text(expenseList[index].amount.toStringAsFixed(2)),
-                    ),
-                  );
+                      subtitle: Text(expenseList[index].category),
+                      trailing: Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18
+                        )),
+                    );
                 }),
               ),
-              
             ],
           ),
         ),
