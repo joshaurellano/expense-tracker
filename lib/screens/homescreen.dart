@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './addexpense.dart';
+import '../models/expense.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -34,8 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(),
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(onPressed:  () {
-        Navigator.push(context, MaterialPageRoute<void>(builder: (context) => const AddExpense()));
+      floatingActionButton: FloatingActionButton(onPressed:() async {
+        final newExpense = await Navigator.push<Expense>(
+          context, MaterialPageRoute(builder: (context) => const AddExpense())
+        );
+        if (newExpense != null){
+          setState(() {
+            expenseList.add(newExpense);
+          });
+        }
       },
         backgroundColor: Colors.blue,
         shape: const CircleBorder(), 
@@ -119,7 +127,37 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 20,),
               Expanded(child: expenseList.isEmpty ? Center(
                 child: Text('No expense added'),
-              ): Container()),
+              ): ListView.builder(
+                itemCount: expenseList.length,
+                itemBuilder: (context,index)
+              {
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)
+                    ),
+                    child: ListTile(
+                      leading: Container(                          
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: expenseList[index].icon,
+                        ),
+                      ),
+                      title: Text(expenseList[index].description,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500
+                        ),),
+                      subtitle: Text(expenseList[index].amount.toStringAsFixed(2)),
+                    ),
+                  );
+                }),
+              ),
               
             ],
           ),
