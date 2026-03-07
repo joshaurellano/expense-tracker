@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './addexpense.dart';
 import '../models/expense.dart';
-import './editscreen.dart';
+import '../components/expenselist.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,7 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final double budget = 0;
   final double remainingbudget = 0;
   bool editMode = false;
-  bool isChecked = false;
 
   String get formattedExpenses =>
       expenses % 1 == 0
@@ -146,50 +145,15 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 20,),
               Expanded(child: expenseList.isEmpty ? Center(
                 child: Text('No expense added'),
-              ): ListView.builder(
+              ): ListView.separated(
                 itemCount: expenseList.length,
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
                 itemBuilder: (context,index)
               {
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                      leading: Container(                          
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: expenseList[index].icon,
-                        ),
-                      ),
-                      title: Text(expenseList[index].description,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500
-                        ),),
-                      subtitle: editMode ? Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 16
-                        )) : Text(expenseList[index].category),
-                      trailing: editMode ? GestureDetector(
-                        onTap: () => {
-                          Navigator.push(context, MaterialPageRoute<void>(
-                            builder: (context) => Editscreen(expenseDetail: expenseList[index])) )
-                        },
-                        child: Text("Edit", style: TextStyle(
-                          fontSize: 18,
-                          decoration: TextDecoration.underline
-                        ),),
-                      )
-                      : Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 18
-                        )),
-                    );
+                  return Expenselist(
+                    expense: expenseList[index],
+                    editMode: editMode,
+                  );
                 }),
               ),
             ],
