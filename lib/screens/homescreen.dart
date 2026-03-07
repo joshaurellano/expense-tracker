@@ -14,6 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
   double expenses = 0;
   final double budget = 0;
   final double remainingbudget = 0;
+  bool editMode = false;
+  bool isChecked = false;
 
   String get formattedExpenses =>
       expenses % 1 == 0
@@ -123,10 +125,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),),
               ),
               SizedBox(height: 20,),
-              Text('Recent Expenses',style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500
-              ),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Recent Expenses',style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500
+                  ),),
+                  expenseList.isEmpty ? const Text(""):
+                  GestureDetector(
+                    onTap: () => {
+                      setState(() {
+                        editMode = !editMode;
+                      })
+                    },
+                    child: !editMode ? Icon(Icons.edit) : Icon(Icons.edit_off))
+                ],
+              ),
               SizedBox(height: 20,),
               Expanded(child: expenseList.isEmpty ? Center(
                 child: Text('No expense added'),
@@ -153,8 +168,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18,
                           fontWeight: FontWeight.w500
                         ),),
-                      subtitle: Text(expenseList[index].category),
-                      trailing: Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
+                      subtitle: editMode ? Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16
+                        )) : Text(expenseList[index].category),
+                      trailing: editMode ? GestureDetector(
+                        onTap: (),
+                        child: Text("Edit", style: TextStyle(
+                          fontSize: 18,
+                          decoration: TextDecoration.underline
+                        ),),
+                      )
+                      : Text('- ₱ ${expenseList[index].amount.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 18
