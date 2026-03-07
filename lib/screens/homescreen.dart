@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './addexpense.dart';
 import '../models/expense.dart';
+import './editscreen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -10,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final String user = 'Joshua';
-  final List expenseList = [];
+  final List<Expense> expenseList = [];
   double expenses = 0;
   final double budget = 0;
   final double remainingbudget = 0;
@@ -174,7 +175,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 16
                         )) : Text(expenseList[index].category),
                       trailing: editMode ? GestureDetector(
-                        onTap: (),
+                        onTap: () => {
+                          Navigator.push(context, MaterialPageRoute<void>(
+                            builder: (context) => Editscreen(expenseDetail: expenseList[index])) )
+                        },
                         child: Text("Edit", style: TextStyle(
                           fontSize: 18,
                           decoration: TextDecoration.underline
