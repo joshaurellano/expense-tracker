@@ -37,7 +37,12 @@ class Expenselist extends StatelessWidget {
           style: TextStyle(
             color: Colors.red,
             fontSize: 16
-          )) : Text(expense.category),
+          )) : Row(
+            children: [
+              Text('${expense.selectDate.month}/${expense.selectDate.day}/${expense.selectDate.year} '),
+              Icon(Icons.circle, size: 5,),
+              Text(' ${expense.category}')
+            ]),
         trailing: editMode ? GestureDetector(
           onTap: () => {
             Navigator.push(context, MaterialPageRoute<void>(
