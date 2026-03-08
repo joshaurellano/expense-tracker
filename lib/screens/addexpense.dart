@@ -165,7 +165,7 @@ class _AddExpenseState extends State<AddExpense> {
                       ),),
                       GestureDetector(
                         onTap: () => _selectDate(),
-                        child: Text('${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                        child: Text('${selectedDate.month}/${selectedDate.day}/${selectedDate.year}',
                             style: TextStyle(
                               fontSize: 18
                             ),
@@ -205,7 +205,7 @@ class _AddExpenseState extends State<AddExpense> {
                             }
                             return;
                           }
-                    
+                          
                           final newExpense = Expense(
                           amount: double.parse(expenseAmountcontroller.text),
                           category: selectedCategory!,
@@ -234,8 +234,6 @@ class _AddExpenseState extends State<AddExpense> {
                     ),
                         ],
                       ),
-                  
-                  
               ],
             ),
           ),

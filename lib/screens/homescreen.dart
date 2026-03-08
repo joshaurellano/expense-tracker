@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './addexpense.dart';
 import '../models/expense.dart';
 import '../components/expenselist.dart';
+import './editscreen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final double budget = 0;
   final double remainingbudget = 0;
   bool editMode = false;
+
+  
 
   String get formattedExpenses =>
       expenses % 1 == 0
@@ -32,6 +35,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ? '₱${remainingbudget.toInt()}'
           : '₱${remainingbudget.toStringAsFixed(2)}';
 
+  Future<void> _openEditScreen(int index) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Editscreen(
+      expenseDetail: expenseList[index],
+      index: index,
+    )),
+  );
+
+  if (result != null) {
+    setState(() {
+      expenses -= expenseList[index].amount;        
+      expenseList[index] = result['expense'];        
+      expenses += result['expense'].amount;         
+    });
+  }
+}
+          
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             expenseList.add(newExpense);
             expenses += newExpense.amount;
+
+        
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Yay!... ${newExpense.description} added!')));
@@ -153,6 +177,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Expenselist(
                     expense: expenseList[index],
                     editMode: editMode,
+                    index: index,
+                    onEdit: () => _openEditScreen(index)
                   );
                 }),
               ),
