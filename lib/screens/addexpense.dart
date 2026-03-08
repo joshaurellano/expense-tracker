@@ -81,9 +81,16 @@ class _AddExpenseState extends State<AddExpense> {
                   TextFormField(
                     controller: expenseAmountcontroller,
                     validator: (value){
-                      if(value == null || value.isEmpty){
+                      try{
+                        if(value == null || value.isEmpty){
                         return 'Amount cannot be empty';
-                      }
+                        }
+                        else if (double.parse(value) < 0){
+                          return 'Amount cannot be less than 0';
+                        } 
+                      } catch (e) {
+                        return 'Enter valid number';
+                      } 
                       return null;
                     },
                     style: TextStyle(
