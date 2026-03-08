@@ -1,4 +1,3 @@
-import 'package:expense_tracker/screens/editscreen.dart';
 import 'package:flutter/material.dart';
 import '../models/expense.dart';
 
@@ -6,12 +5,18 @@ class Expenselist extends StatelessWidget {
 
   final bool editMode;
   final Expense expense;
+  final int index;
+  final VoidCallback? onEdit;
 
   const Expenselist({
       super.key, 
       required this.expense,
       this.editMode = false,
+      required this.index,
+      this.onEdit, 
     });
+
+  
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -37,12 +42,15 @@ class Expenselist extends StatelessWidget {
           style: TextStyle(
             color: Colors.red,
             fontSize: 16
-          )) : Text(expense.category),
+          )) : Row(
+            children: [
+              Text('${expense.selectDate.month}/${expense.selectDate.day}/${expense.selectDate.year} '),
+              Icon(Icons.circle, size: 5,),
+              Text(' ${expense.category}')
+            ]),
         trailing: editMode ? GestureDetector(
-          onTap: () => {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (context) => Editscreen(expenseDetail: expense)) )
-          },
+          onTap: () => 
+            onEdit?.call(),
           child: Text("Edit", style: TextStyle(
             fontSize: 18,
             decoration: TextDecoration.underline

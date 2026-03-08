@@ -37,6 +37,22 @@ class _AddExpenseState extends State<AddExpense> {
   }
     ];
     String? selectedCategory;
+    DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2021),
+      lastDate: DateTime(2030),
+    );
+  
+  if (pickedDate != null) { 
+  setState(() {
+      selectedDate = pickedDate;
+    });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +81,16 @@ class _AddExpenseState extends State<AddExpense> {
                   TextFormField(
                     controller: expenseAmountcontroller,
                     validator: (value){
-                      if(value == null || value.isEmpty){
+                      try{
+                        if(value == null || value.isEmpty){
                         return 'Amount cannot be empty';
-                      }
+                        }
+                        else if (double.parse(value) < 0){
+                          return 'Amount cannot be less than 0';
+                        } 
+                      } catch (e) {
+                        return 'Enter valid number';
+                      } 
                       return null;
                     },
                     style: TextStyle(
@@ -90,7 +113,7 @@ class _AddExpenseState extends State<AddExpense> {
                   ),),
                   SizedBox(height: 20,),
                   SizedBox(
-                    height: 220,
+                    height: 180,
                     child: GridView.count(
                     crossAxisCount: 4,        
                     crossAxisSpacing: 8,
@@ -115,7 +138,7 @@ class _AddExpenseState extends State<AddExpense> {
                             child: SizedBox(
                               width: 28,
                               height: 28,
-                              child: category['icon'] as Widget,   // ✅ renders your Asset Image
+                              child: category['icon'] as Widget,  
                             ),
                           ),
                             const SizedBox(height: 4),
@@ -136,6 +159,19 @@ class _AddExpenseState extends State<AddExpense> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Text('Select Date',style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600
+                      ),),
+                      GestureDetector(
+                        onTap: () => _selectDate(),
+                        child: Text('${selectedDate.month}/${selectedDate.day}/${selectedDate.year}',
+                            style: TextStyle(
+                              fontSize: 18
+                            ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
                       const Text('Description', 
                       style: TextStyle(
                         fontSize: 20,
@@ -164,16 +200,17 @@ class _AddExpenseState extends State<AddExpense> {
                           if (!isValid || selectedCategory == null) {
                             if (selectedCategory == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Please select a category')),  // ✅ category error
+                                const SnackBar(content: Text('Please select a category')),
                               );
                             }
                             return;
                           }
-                    
+                          
                           final newExpense = Expense(
                           amount: double.parse(expenseAmountcontroller.text),
                           category: selectedCategory!,
                           description: expenseNameController.text,
+                          selectDate: selectedDate,
                           icon: categories.firstWhere(
                           (c) => c['name'] == selectedCategory
                           )['icon'] as Widget,
@@ -197,8 +234,6 @@ class _AddExpenseState extends State<AddExpense> {
                     ),
                         ],
                       ),
-                  
-                  
               ],
             ),
           ),
