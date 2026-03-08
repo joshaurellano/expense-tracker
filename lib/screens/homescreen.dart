@@ -168,7 +168,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 20,),
               Expanded(child: expenseList.isEmpty ? Center(
-                child: Text('No expense added'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.assignment_outlined),
+                    Text('No expenses yet'),
+                    Text('Tap the "+" button to add expense'),
+                  ],
+                ),
               ): ListView.separated(
                 itemCount: expenseList.length,
                 separatorBuilder: (BuildContext context, int index) => const Divider(),
